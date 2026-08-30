@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ToolRz Age Calculator</title>
+
+<meta name="description" content="Calculate your exact age in years, months and days with the free ToolRz Age Calculator.">
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+    color: #172033;
+}
+
+header {
+    background: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.logo {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #2563eb;
+}
+
+.container {
+    max-width: 650px;
+    margin: 45px auto;
+    padding: 20px;
+}
+
+.box {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+h1 {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.subtitle {
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 28px;
+}
+
+label {
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+input[type="date"] {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.result {
+    display: none;
+    margin-top: 25px;
+    padding: 22px;
+    background: #f1f5f9;
+    border-radius: 14px;
+}
+
+.result h2 {
+    margin-bottom: 15px;
+}
+
+.age-number {
+    font-size: 25px;
+    font-weight: bold;
+    line-height: 1.8;
+}
+
+.back {
+    display: inline-block;
+    margin-top: 25px;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #64748b;
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 27px;
+    }
+
+    .box {
+        padding: 22px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">Tool<span>Rz</span></div>
+</header>
+
+<div class="container">
+
+    <div class="box">
+
+        <h1>Age Calculator</h1>
+
+        <p class="subtitle">
+            Enter your date of birth to calculate your exact age.
+        </p>
+
+        <label for="birthDate">Date of Birth</label>
+
+        <input
+            type="date"
+            id="birthDate"
+        >
+
+        <button onclick="calculateAge()">
+            Calculate Age
+        </button>
+
+        <div class="result" id="result">
+
+            <h2>Your Age</h2>
+
+            <div class="age-number" id="ageResult"></div>
+
+        </div>
+
+        <a class="back" href="index.html">
+            ← Back to ToolRz
+        </a>
+
+    </div>
+
+</div>
+
+<footer>
+    © 2026 ToolRz — Free Online Tools
+</footer>
+
+<script>
+
+function calculateAge() {
+
+    const birthInput =
+        document.getElementById("birthDate").value;
+
+    if (!birthInput) {
+        alert("Please select your date of birth.");
+        return;
+    }
+
+    const birthDate =
+        new Date(birthInput + "T00:00:00");
+
+    const today =
+        new Date();
+
+    if (birthDate > today) {
+        alert("Date of birth cannot be in the future.");
+        return;
+    }
+
+    let years =
+        today.getFullYear() -
+        birthDate.getFullYear();
+
+    let months =
+        today.getMonth() -
+        birthDate.getMonth();
+
+    let days =
+        today.getDate() -
+        birthDate.getDate();
+
+    if (days < 0) {
+
+        months--;
+
+        const previousMonth =
+            new Date(
+                today.getFullYear(),
+                today.getMonth(),
+                0
+            );
+
+        days += previousMonth.getDate();
+    }
+
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    document.getElementById("ageResult").innerHTML =
+        years + " Years<br>" +
+        months + " Months<br>" +
+        days + " Days";
+
+    document.getElementById("result").style.display =
+        "block";
+}
+
+</script>
+
+</body>
+</html>
