@@ -6,146 +6,116 @@
 
 <title>ToolRz Percentage Calculator</title>
 
-<meta name="description" content="Free online percentage calculator. Calculate percentages quickly and easily with ToolRz.">
-
 <style>
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background: #f5f7fb;
-    color: #172033;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f7fb;
+  color: #172033;
 }
 
 header {
-    background: white;
-    padding: 20px;
-    text-align: center;
-    border-bottom: 1px solid #e5e7eb;
+  background: white;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .logo {
-    font-size: 30px;
-    font-weight: bold;
+  font-size: 30px;
+  font-weight: bold;
 }
 
 .logo span {
-    color: #2563eb;
+  color: #2563eb;
 }
 
 .container {
-    max-width: 650px;
-    margin: 45px auto;
-    padding: 20px;
+  max-width: 650px;
+  margin: 40px auto;
+  padding: 20px;
 }
 
 .box {
-    background: white;
-    padding: 30px;
-    border-radius: 18px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  background: white;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
 }
 
 h1 {
-    text-align: center;
-    font-size: 32px;
-    margin-bottom: 12px;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 .subtitle {
-    text-align: center;
-    color: #64748b;
-    line-height: 1.6;
-    margin-bottom: 30px;
+  text-align: center;
+  color: #64748b;
+  margin-bottom: 30px;
 }
 
 .calculation {
-    padding: 20px;
-    background: #f8fafc;
-    border-radius: 14px;
-    margin-bottom: 20px;
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 20px;
 }
 
 .calculation h2 {
-    font-size: 19px;
-    margin-bottom: 15px;
+  font-size: 19px;
+  margin-top: 0;
 }
 
 label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 7px;
+  display: block;
+  font-weight: bold;
+  margin: 12px 0 6px;
 }
 
 input {
-    width: 100%;
-    padding: 13px;
-    border: 1px solid #cbd5e1;
-    border-radius: 9px;
-    font-size: 16px;
-    margin-bottom: 15px;
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  font-size: 16px;
 }
 
 button {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 10px;
-    background: #2563eb;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-button:hover {
-    opacity: 0.9;
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px;
+  border: 0;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .result {
-    display: none;
-    margin-top: 25px;
-    padding: 20px;
-    background: #f1f5f9;
-    border-radius: 12px;
-    text-align: center;
-}
-
-.result h2 {
-    margin-bottom: 10px;
+  display: none;
+  margin-top: 20px;
+  padding: 20px;
+  background: #eef2ff;
+  border-radius: 12px;
+  text-align: center;
 }
 
 .answer {
-    font-size: 27px;
-    font-weight: bold;
+  font-size: 25px;
+  font-weight: bold;
 }
 
 .back {
-    display: block;
-    text-align: center;
-    margin-top: 25px;
-    color: #2563eb;
-    text-decoration: none;
-}
-
-footer {
-    text-align: center;
-    padding: 30px;
-    color: #64748b;
-}
-
-@media (max-width: 600px) {
-    h1 {
-        font-size: 27px;
-    }
-
-    .box {
-        padding: 22px;
-    }
+  display: block;
+  text-align: center;
+  margin-top: 25px;
+  color: #2563eb;
+  text-decoration: none;
 }
 </style>
 </head>
@@ -153,49 +123,118 @@ footer {
 <body>
 
 <header>
-    <div class="logo">Tool<span>Rz</span></div>
+  <div class="logo">Tool<span>Rz</span></div>
 </header>
 
 <div class="container">
 
-    <div class="box">
+<div class="box">
 
-        <h1>Percentage Calculator</h1>
+<h1>Percentage Calculator</h1>
 
-        <p class="subtitle">
-            Calculate percentages quickly and easily.
-        </p>
+<p class="subtitle">
+Calculate percentages quickly and easily.
+</p>
 
-        <div class="calculation">
+<div class="calculation">
 
-            <h2>What is X% of Y?</h2>
+<h2>What is X% of Y?</h2>
 
-            <label for="percent1">Percentage (%)</label>
-            <input type="number" id="percent1" placeholder="Example: 20">
+<label>Percentage (%)</label>
+<input type="number" id="percent1" placeholder="Example: 20">
 
-            <label for="number1">Number</label>
-            <input type="number" id="number1" placeholder="Example: 500">
+<label>Number</label>
+<input type="number" id="number1" placeholder="Example: 500">
 
-            <button onclick="calculatePercentage()">
-                Calculate
-            </button>
+<button id="button1">
+Calculate
+</button>
 
-        </div>
+</div>
 
-        <div class="calculation">
+<div class="calculation">
 
-            <h2>What percentage is X of Y?</h2>
+<h2>What percentage is X of Y?</h2>
 
-            <label for="number2">Value</label>
-            <input type="number" id="number2" placeholder="Example: 50">
+<label>Value</label>
+<input type="number" id="number2" placeholder="Example: 50">
 
-            <label for="number3">Total</label>
-            <input type="number" id="number3" placeholder="Example: 200">
+<label>Total</label>
+<input type="number" id="number3" placeholder="Example: 200">
 
-            <button onclick="calculateWhatPercent()">
-                Calculate
-            </button>
+<button id="button2">
+Calculate
+</button>
 
-        </div>
+</div>
 
-        <div class="result" id="
+<div class="result" id="result">
+<h2>Result</h2>
+<div class="answer" id="answer"></div>
+</div>
+
+<a class="back" href="index.html">
+← Back to ToolRz
+</a>
+
+</div>
+</div>
+
+<script>
+
+document.getElementById("button1").addEventListener("click", function() {
+
+  var percentage =
+    parseFloat(document.getElementById("percent1").value);
+
+  var number =
+    parseFloat(document.getElementById("number1").value);
+
+  if (isNaN(percentage) || isNaN(number)) {
+    alert("Please enter both values.");
+    return;
+  }
+
+  var result =
+    (percentage / 100) * number;
+
+  document.getElementById("answer").textContent =
+    percentage + "% of " + number + " = " + result;
+
+  document.getElementById("result").style.display = "block";
+
+});
+
+
+document.getElementById("button2").addEventListener("click", function() {
+
+  var value =
+    parseFloat(document.getElementById("number2").value);
+
+  var total =
+    parseFloat(document.getElementById("number3").value);
+
+  if (isNaN(value) || isNaN(total)) {
+    alert("Please enter both values.");
+    return;
+  }
+
+  if (total === 0) {
+    alert("Total cannot be zero.");
+    return;
+  }
+
+  var result =
+    (value / total) * 100;
+
+  document.getElementById("answer").textContent =
+    value + " is " + result.toFixed(2) + "% of " + total;
+
+  document.getElementById("result").style.display = "block";
+
+});
+
+</script>
+
+</body>
+</html>
