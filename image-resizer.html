@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ToolRz Image Resizer</title>
+
+<meta name="description" content="Resize images online for free with ToolRz. Set custom width and height and download your resized image.">
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+    color: #172033;
+}
+
+header {
+    background: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.logo {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #2563eb;
+}
+
+.container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.box {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+input[type="file"] {
+    width: 100%;
+    padding: 14px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.preview {
+    display: none;
+    max-width: 100%;
+    max-height: 300px;
+    margin: 25px auto;
+    border-radius: 10px;
+}
+
+.controls {
+    display: none;
+    margin-top: 20px;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+input[type="number"] {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    font-size: 16px;
+}
+
+.checkbox {
+    margin-top: 15px;
+}
+
+.checkbox label {
+    display: inline;
+    font-weight: normal;
+}
+
+button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.result {
+    display: none;
+    margin-top: 25px;
+    padding: 20px;
+    background: #f1f5f9;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.download {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 12px 20px;
+    background: #16a34a;
+    color: white;
+    text-decoration: none;
+    border-radius: 9px;
+    font-weight: bold;
+}
+
+.back {
+    display: block;
+    text-align: center;
+    margin-top: 25px;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #64748b;
+}
+
+@media (max-width: 600px) {
+    .box {
+        padding: 20px;
+    }
+
+    .row {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">Tool<span>Rz</span></div>
+</header>
+
+<div class="container">
+
+<div class="box">
+
+<h1>Image Resizer</h1>
+
+<p class="subtitle">
+Resize your image to any custom width and height.
+</p>
+
+<input type="file" id="imageInput" accept="image/*">
+
+<img id="preview" class="preview">
+
+<div class="controls" id="controls">
+
+<div class="row">
+
+<div>
+<label for="width">Width (px)</label>
+<input type="number" id="width" min="1">
+</div>
+
+<div>
+<label for="height">Height (px)</label>
+<input type="number" id="height" min="1">
+</div>
+
+</div>
+
+<div class="checkbox">
+<input type="checkbox" id="lockRatio" checked>
+<label for="lockRatio">Keep aspect ratio</label>
+</div>
+
+<button id="resizeButton">
+Resize Image
+</button>
+
+</div>
+
+<div class="result" id="result">
+
+<p id="resultText"></p>
+
+<a id="download" class="download" download="toolrz-resized-image.jpg">
+Download Resized Image
+</a>
+
+</div>
+
+<a class="back" href="index.html">
+← Back to ToolRz
+</a>
+
+</div>
+</div>
+
+<footer>
+© 2026 ToolRz — Free Online Tools
+</footer>
+
+<script>
+
+var imageInput = document.getElementById("imageInput");
+var preview = document.getElementById("preview");
+var controls = document.getElementById("controls");
+
+var widthInput = document.getElementById("width");
+var heightInput = document.getElementById("height");
+
+var lockRatio = document.getElementById("lockRatio");
+
+var originalWidth = 0;
+var originalHeight = 0;
+var ratio = 1;
+
+imageInput.addEventListener("change", function() {
+
+    var file = imageInput.files[0];
+
+    if (!file) {
+        return;
+    }
+
+    var url = URL.createObjectURL(file);
+
+    preview.src = url;
+    preview.style.display = "block";
+
+    var img = new Image();
+
+    img.onload = function() {
+
+        originalWidth = img.width;
+        originalHeight = img.height;
+
+        ratio = originalWidth / originalHeight;
+
+        widthInput.value = originalWidth;
+        heightInput.value = originalHeight;
+
+        controls.style.display = "block";
+
+        document.getElementById("result").style.display = "none";
+    };
+
+    img.src = url;
+});
+
+widthInput.addEventListener("input", function() {
+
+    if (lockRatio.checked && originalWidth > 0) {
+
+        heightInput.value =
+            Math.round(widthInput.value / ratio);
+    }
+});
+
+heightInput.addEventListener("input", function() {
+
+    if (lockRatio.checked && originalHeight > 0) {
+
+        widthInput.value =
+            Math.round(heightInput.value * ratio);
+    }
+});
+
+document.getElementById("resizeButton").addEventListener("click", function() {
+
+    var file = imageInput.files[0];
+
+    if (!file) {
+        alert("Please select an image first.");
+        return;
+    }
+
+    var newWidth =
+        parseInt(widthInput.value);
+
+    var newHeight =
+        parseInt(heightInput.value);
+
+    if (!newWidth || !newHeight || newWidth < 1 || newHeight < 1) {
+        alert("Please enter valid width and height.");
+        return;
+    }
+
+    var img = new Image();
+
+    img.onload = function() {
+
+        var canvas =
+            document.createElement("canvas");
+
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+
+        var ctx =
+            canvas.getContext("2d");
+
+        ctx.drawImage(
+            img,
+            0,
+            0,
+            newWidth,
+            newHeight
+        );
+
+        canvas.toBlob(function(blob) {
+
+            if (!blob) {
+                alert("Unable to resize this image.");
+                return;
+            }
+
+            var downloadURL =
+                URL.createObjectURL(blob);
+
+            document.getElementById("download").href =
+                downloadURL;
+
+            document.getElementById("resultText").textContent =
+                "Image resized to " +
+                newWidth +
+                " × " +
+                newHeight +
+                " pixels.";
+
+            document.getElementById("result").style.display =
+                "block";
+
+        }, "image/jpeg", 0.92);
+
+    };
+
+    img.src = URL.createObjectURL(file);
+
+});
+
+</script>
+
+</body>
+</html>
