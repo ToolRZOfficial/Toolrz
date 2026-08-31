@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ToolRz PDF to JPG</title>
+
+<meta name="description" content="Convert PDF pages to JPG images online with ToolRz.">
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+    color: #172033;
+}
+
+header {
+    background: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.logo {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #2563eb;
+}
+
+.container {
+    max-width: 750px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.box {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+input[type="file"] {
+    width: 100%;
+    padding: 14px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.6;
+}
+
+.status {
+    margin-top: 20px;
+    color: #64748b;
+}
+
+.results {
+    margin-top: 25px;
+}
+
+.page {
+    background: #f8fafc;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 12px;
+}
+
+.page img {
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.download {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 11px 18px;
+    background: #16a34a;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.back {
+    display: block;
+    margin-top: 25px;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #64748b;
+}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+</head>
+
+<body>
+
+<header>
+    <div class="logo">Tool<span>Rz</span></div>
+</header>
+
+<div class="container">
+
+<div class="box">
+
+<h1>PDF to JPG</h1>
+
+<p class="subtitle">
+Convert PDF pages into JPG images directly in your browser.
+</p>
+
+<input type="file" id="pdfInput" accept="application/pdf">
+
+<button id="convertButton">
+Convert PDF to JPG
+</button>
+
+<div class="status" id="status"></div>
+
+<div class="results" id="results"></div>
+
+<a class="back" href="index.html">
+← Back to ToolRz
+</a>
+
+</div>
+</div>
+
+<footer>
+© 2026 ToolRz — Free Online Tools
+</footer>
+
+<script>
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+var pdfInput =
+document.getElementById("pdfInput");
+
+var convertButton =
+document.getElementById("convertButton");
+
+var status =
+document.getElementById("status");
+
+var results =
+document.getElementById("results");
+
+
+convertButton.addEventListener("click", async function() {
+
+    var file = pdfInput.files[0];
+
+    if (!file) {
+        alert("Please select a PDF file first.");
+        return;
+    }
+
+    convertButton.disabled = true;
+
+    status.textContent = "Converting PDF...";
+
+    results.innerHTML = "";
+
+    try {
+
+        var arrayBuffer =
+            await file.arrayBuffer();
+
+        var pdf =
+            await pdfjsLib.getDocument({
+                data: arrayBuffer
+            }).promise;
+
+        for (var pageNumber = 1;
+             pageNumber <= pdf.numPages;
+             pageNumber++) {
+
+            status.textContent =
+                "Converting page " +
+                pageNumber +
+                " of " +
+                pdf.numPages +
+                "...";
+
+            var page =
+                await pdf.getPage(pageNumber);
+
+            var viewport =
+                page.getViewport({
+                    scale: 1.5
+                });
+
+            var canvas =
+                document.createElement("canvas");
+
+            var context =
+                canvas.getContext("2d");
+
+            canvas.width =
+                viewport.width;
+
+            canvas.height =
+                viewport.height;
+
+            await page.render({
+                canvasContext: context,
+                viewport: viewport
+            }).promise;
+
+            var jpgData =
+                canvas.toDataURL(
+                    "image/jpeg",
+                    0.92
+                );
+
+            var pageBox =
+                document.createElement("div");
+
+            pageBox.className = "page";
+
+            var title =
+                document.createElement("p");
+
+            title.textContent =
+                "Page " + pageNumber;
+
+            var image =
+                document.createElement("img");
+
+            image.src = jpgData;
+
+            var download =
+                document.createElement("a");
+
+            download.className =
+                "download";
+
+            download.href =
+                jpgData;
+
+            download.download =
+                "toolrz-page-" +
+                pageNumber +
+                ".jpg";
+
+            download.textContent =
+                "Download JPG";
+
+            pageBox.appendChild(title);
+            pageBox.appendChild(image);
+            pageBox.appendChild(download);
+
+            results.appendChild(pageBox);
+        }
+
+        status.textContent =
+            "Conversion complete!";
+
+    } catch (error) {
+
+        console.error(error);
+
+        status.textContent =
+            "Unable to convert this PDF.";
+
+        alert(
+            "There was a problem reading this PDF."
+        );
+
+    }
+
+    convertButton.disabled = false;
+
+});
+
+</script>
+
+</body>
+</html>
