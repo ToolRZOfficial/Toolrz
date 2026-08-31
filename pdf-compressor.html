@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ToolRz PDF Compressor</title>
+
+<meta name="description" content="Compress PDF files online with ToolRz and reduce PDF file size.">
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+    color: #172033;
+}
+
+header {
+    background: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.logo {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #2563eb;
+}
+
+.container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.box {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+input[type="file"] {
+    width: 100%;
+    padding: 14px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.option {
+    margin-top: 20px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+select {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    font-size: 16px;
+    background: white;
+}
+
+.file-info {
+    margin-top: 15px;
+    padding: 12px;
+    background: #f1f5f9;
+    border-radius: 9px;
+    display: none;
+    text-align: center;
+}
+
+button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.status {
+    text-align: center;
+    margin-top: 20px;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.result {
+    display: none;
+    margin-top: 25px;
+    padding: 20px;
+    background: #f1f5f9;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.download {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 12px 20px;
+    background: #16a34a;
+    color: white;
+    text-decoration: none;
+    border-radius: 9px;
+    font-weight: bold;
+}
+
+.back {
+    display: block;
+    text-align: center;
+    margin-top: 25px;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #64748b;
+}
+
+@media (max-width: 600px) {
+    .box {
+        padding: 20px;
+    }
+}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</head>
+
+<body>
+
+<header>
+    <div class="logo">Tool<span>Rz</span></div>
+</header>
+
+<div class="container">
+
+<div class="box">
+
+<h1>PDF Compressor</h1>
+
+<p class="subtitle">
+Reduce PDF file size directly in your browser.
+</p>
+
+<input type="file" id="pdfInput" accept="application/pdf">
+
+<div class="file-info" id="fileInfo"></div>
+
+<div class="option">
+
+<label for="quality">Compression Level</label>
+
+<select id="quality">
+    <option value="0.75">Recommended</option>
+    <option value="0.60">High Compression</option>
+    <option value="0.45">Maximum Compression</option>
+</select>
+
+</div>
+
+<button id="compressButton">
+Compress PDF
+</button>
+
+<div class="status" id="status"></div>
+
+<div class="result" id="result">
+
+<div id="resultText"></div>
+
+<a id="download"
+class="download"
+download="toolrz-compressed.pdf">
+Download Compressed PDF
+</a>
+
+</div>
+
+<a class="back" href="index.html">
+← Back to ToolRz
+</a>
+
+</div>
+
+</div>
+
+<footer>
+© 2026 ToolRz — Free Online Tools
+</footer>
+
+<script>
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+var pdfInput =
+document.getElementById("pdfInput");
+
+var fileInfo =
+document.getElementById("fileInfo");
+
+var compressButton =
+document.getElementById("compressButton");
+
+var status =
+document.getElementById("status");
+
+var result =
+document.getElementById("result");
+
+var resultText =
+document.getElementById("resultText");
+
+var download =
+document.getElementById("download");
+
+
+function formatBytes(bytes) {
+
+    if (bytes < 1024) {
+        return bytes + " B";
+    }
+
+    if (bytes < 1024 * 1024) {
+        return (bytes / 1024).toFixed(1) + " KB";
+    }
+
+    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+}
+
+
+pdfInput.addEventListener("change", function() {
+
+    var file = pdfInput.files[0];
+
+    if (!file) {
+        fileInfo.style.display = "none";
+        return;
+    }
+
+    fileInfo.textContent =
+        "Selected PDF: " +
+        file.name +
+        " • " +
+        formatBytes(file.size);
+
+    fileInfo.style.display = "block";
+
+    result.style.display = "none";
+    status.textContent = "";
+});
+
+
+compressButton.addEventListener("click", async function() {
+
+    var file = pdfInput.files[0];
+
+    if (!file) {
+        alert("Please select a PDF file first.");
+        return;
+    }
+
+    compressButton.disabled = true;
+
+    result.style.display = "none";
+
+    status.textContent =
+        "Reading PDF...";
+
+    try {
+
+        var arrayBuffer =
+            await file.arrayBuffer();
+
+        var pdf =
+            await pdfjsLib.getDocument({
+                data: arrayBuffer
+            }).promise;
+
+        var selectedQuality =
+            parseFloat(
+                document.getElementById("quality").value
+            );
+
+        var outputPDF = null;
+
+        for (
+            var pageNumber = 1;
+            pageNumber <= pdf.numPages;
+            pageNumber++
+        ) {
+
+            status.textContent =
+                "Compressing page " +
+                pageNumber +
+                " of " +
+                pdf.numPages +
+                "...";
+
+            var page =
+                await pdf.getPage(pageNumber);
+
+            var baseViewport =
+                page.getViewport({
+                    scale: 1
+                });
+
+            var maxWidth = 1200;
+
+            var scale =
+                Math.min(
+                    1.5,
+                    maxWidth / baseViewport.width
+                );
+
+            var viewport =
+                page.getViewport({
+                    scale: scale
+                });
+
+            var canvas =
+                document.createElement("canvas");
+
+            var context =
+                canvas.getContext("2d", {
+                    alpha: false
+                });
+
+            canvas.width =
+                Math.floor(viewport.width);
+
+            canvas.height =
+                Math.floor(viewport.height);
+
+            context.fillStyle = "white";
+
+            context.fillRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+            await page.render({
+                canvasContext: context,
+                viewport: viewport
+            }).promise;
+
+            var imageData =
+                canvas.toDataURL(
+                    "image/jpeg",
+                    selectedQuality
+                );
+
+            var orientation =
+                canvas.width >= canvas.height
+                ? "landscape"
+                : "portrait";
+
+            var pageWidth =
+                orientation === "landscape"
+                ? 297
+                : 210;
+
+            var pageHeight =
+                orientation === "landscape"
+                ? 210
+                : 297;
+
+            if (pageNumber === 1) {
+
+                outputPDF =
+                    new window.jspdf.jsPDF({
+                        orientation: orientation,
+                        unit: "mm",
+                        format: "a4",
+                        compress: true
+                    });
+
+            } else {
+
+                outputPDF.addPage(
+                    "a4",
+                    orientation
+                );
+            }
+
+            var margin = 0;
+
+            outputPDF.addImage(
+                imageData,
+                "JPEG",
+                margin,
+                margin,
+                pageWidth,
+                pageHeight,
+                undefined,
+                "FAST"
+            );
+
+            canvas.width = 1;
+            canvas.height = 1;
+        }
+
+        status.textContent =
+            "Creating compressed PDF...";
+
+        var blob =
+            outputPDF.output("blob");
+
+        var compressedSize =
+            blob.size;
+
+        var originalSize =
+            file.size;
+
+        var reduction =
+            ((originalSize - compressedSize)
+            / originalSize) * 100;
+
+        var safeReduction =
+            Math.max(0, reduction);
+
+        var downloadURL =
+            URL.createObjectURL(blob);
+
+        download.href =
+            downloadURL;
+
+        download.download =
+            "toolrz-compressed.pdf";
+
+        if (compressedSize < originalSize) {
+
+            resultText.innerHTML =
+                "<strong>Compression complete!</strong><br><br>" +
+                "Original size: " +
+                formatBytes(originalSize) +
+                "<br>" +
+                "Compressed size: " +
+                formatBytes(compressedSize) +
+                "<br>" +
+                "Reduced by: " +
+                safeReduction.toFixed(1) +
+                "%";
+
+        } else {
+
+            resultText.innerHTML =
+                "<strong>PDF created successfully.</strong><br><br>" +
+                "Original size: " +
+                formatBytes(originalSize) +
+                "<br>" +
+                "New size: " +
+                formatBytes(compressedSize) +
+                "<br><br>" +
+                "This particular PDF could not be made smaller with this compression method.";
+
+        }
+
+        result.style.display =
+            "block";
+
+        status.textContent =
+            "Done! Your compressed PDF is ready.";
+
+    } catch (error) {
+
+        console.error(error);
+
+        status.textContent =
+            "Unable to compress this PDF.";
+
+        alert(
+            "There was a problem processing this PDF. Please try another PDF file."
+        );
+
+    }
+
+    compressButton.disabled = false;
+
+});
+
+</script>
+
+</body>
+</html>
