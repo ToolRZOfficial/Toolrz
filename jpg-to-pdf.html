@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ToolRz JPG to PDF</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+    color: #172033;
+}
+
+header {
+    background: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.logo {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #2563eb;
+}
+
+.container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.box {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+input[type="file"] {
+    width: 100%;
+    padding: 14px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.preview {
+    display: none;
+    max-width: 100%;
+    max-height: 350px;
+    margin: 25px auto;
+    border-radius: 10px;
+}
+
+button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.result {
+    display: none;
+    margin-top: 25px;
+    padding: 20px;
+    background: #f1f5f9;
+    border-radius: 12px;
+}
+
+.download {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 12px 20px;
+    background: #16a34a;
+    color: white;
+    text-decoration: none;
+    border-radius: 9px;
+    font-weight: bold;
+}
+
+.back {
+    display: block;
+    margin-top: 25px;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #64748b;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">Tool<span>Rz</span></div>
+</header>
+
+<div class="container">
+
+<div class="box">
+
+<h1>JPG to PDF</h1>
+
+<p class="subtitle">
+Convert your image into a PDF file directly in your browser.
+</p>
+
+<input type="file" id="imageInput" accept="image/jpeg,image/png">
+
+<img id="preview" class="preview">
+
+<button id="convertButton">
+Convert to PDF
+</button>
+
+<div class="result" id="result">
+
+<p>PDF is ready.</p>
+
+<a id="download" class="download" download="toolrz-image.pdf">
+Download PDF
+</a>
+
+</div>
+
+<a class="back" href="index.html">
+← Back to ToolRz
+</a>
+
+</div>
+</div>
+
+<footer>
+© 2026 ToolRz — Free Online Tools
+</footer>
+
+<script>
+
+var imageInput = document.getElementById("imageInput");
+var preview = document.getElementById("preview");
+var selectedFile = null;
+
+imageInput.addEventListener("change", function() {
+
+    selectedFile = imageInput.files[0];
+
+    if (!selectedFile) {
+        return;
+    }
+
+    var imageURL = URL.createObjectURL(selectedFile);
+
+    preview.src = imageURL;
+    preview.style.display = "block";
+
+    document.getElementById("result").style.display = "none";
+});
+
+
+document.getElementById("convertButton").addEventListener("click", function() {
+
+    if (!selectedFile) {
+        alert("Please select an image first.");
+        return;
+    }
+
+    var img = new Image();
+
+    img.onload = function() {
+
+        var canvas = document.createElement("canvas");
+        var ctx = canvas.getContext("2d");
+
+        var maxWidth = 1200;
+        var scale = Math.min(1, maxWidth / img.width);
+
+        var width = Math.round(img.width * scale);
+        var height = Math.round(img.height * scale);
+
+        canvas.width = width;
+        canvas.height = height;
+
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        var imageData =
+            canvas.toDataURL("image/jpeg", 0.92);
+
+        var pdf = createPDF(
+            imageData,
+            width,
+            height
+        );
+
+        var blob = new Blob(
+            [pdf],
+            { type: "application/pdf" }
+        );
+
+        var pdfURL =
+            URL.createObjectURL(blob);
+
+        document.getElementById("download").href =
+            pdfURL;
+
+        document.getElementById("result").style.display =
+            "block";
+    };
+
+    img.src = URL.createObjectURL(selectedFile);
+});
+
+
+function createPDF(imageData, imageWidth, imageHeight) {
+
+    var base64 = imageData.split(",")[1];
+
+    var binary = atob(base64);
+
+    var imageBytes = new Uint8Array(binary.length);
+
+    for (var i = 0; i < binary.length; i++) {
+        imageBytes[i] = binary.charCodeAt(i);
+    }
+
+    var pageWidth = 595;
+    var pageHeight = 842;
+
+    var scale = Math.min(
+        pageWidth / imageWidth,
+        pageHeight / imageHeight
+    );
+
+    var drawWidth = imageWidth * scale;
+    var drawHeight = imageHeight * scale;
+
+    var x = (pageWidth - drawWidth) / 2;
+    var y = (pageHeight - drawHeight) / 2;
+
+    var objects = [];
+
+    objects[1] =
+        "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n";
+
+    objects[2] =
+        "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n";
+
+    objects[3] =
+        "3 0 obj\n<< /Type /Page /Parent 2 0 R " +
+        "/MediaBox [0 0 595 842] " +
+        "/Resources << /XObject << /Im1 4 0 R >> >> " +
+        "/Contents 5 0 R >>\nendobj\n";
+
+    objects[4] =
+        "4 0 obj\n<< /Type /XObject " +
+        "/Subtype /Image " +
+        "/Width " + imageWidth +
+        " /Height " + imageHeight +
+        " /ColorSpace /DeviceRGB " +
+        "/BitsPerComponent 8 " +
+        "/Filter /DCTDecode " +
+        "/Length " + imageBytes.length +
+        " >>\nstream\n";
+
+    objects[5] =
+        "5 0 obj\n<< /Length " +
+        (("q\n" +
+        drawWidth + " 0 0 " +
+        drawHeight + " " +
+        x + " " +
+        y + " cm\n" +
+        "/Im1 Do\nQ\n").length) +
+        " >>\nstream\n" +
+        "q\n" +
+        drawWidth + " 0 0 " +
+        drawHeight + " " +
+        x + " " +
+        y + " cm\n" +
+        "/Im1 Do\nQ\n" +
+        "endstream\nendobj\n";
+
+    var pdf = "%PDF-1.4\n";
+    var offsets = [0];
+
+    for (var n = 1; n <= 3; n++) {
+
+        offsets[n] = pdf.length;
+
+        pdf += objects[n];
+    }
+
+    offsets[4] = pdf.length;
+
+    pdf += objects[4];
+
+    var headerBytes = new TextEncoder().encode(pdf);
+
+    var streamBytes = new Uint8Array(
+        headerBytes.length + imageBytes.length + 20
+    );
+
+    streamBytes.set(headerBytes);
+
+    var position = headerBytes.length;
+
+    streamBytes.set(imageBytes, position);
+
+    position += imageBytes.length;
+
+    var tail =
+        new TextEncoder().encode(
+            "\nendstream\nendobj\n"
+        );
+
+    streamBytes.set(tail, position);
+
+    position += tail.length;
+
+    var content =
+        "q\n" +
+        drawWidth + " 0 0 " +
+        drawHeight + " " +
+        x + " " +
+        y + " cm\n" +
+        "/Im1 Do\nQ\n";
+
+    objects[5] =
+        "5 0 obj\n<< /Length " +
+        content.length +
+        " >>\nstream\n" +
+        content +
+        "endstream\nendobj\n";
+
+    var pdf2 = new TextEncoder().encode(
+        "%PDF-1.4\n" +
+        objects[1] +
+        objects[2] +
+        objects[3] +
+        objects[4]
+    );
+
+    var parts = [
+        pdf2,
+        imageBytes,
+        new TextEncoder().encode(
+            "\nendstream\nendobj\n" +
+            objects[5]
+        )
+    ];
+
+    var bodyLength =
+        pdf2.length +
+        imageBytes.length +
+        parts[2].length;
+
+    var xrefStart = bodyLength;
+
+    var xref =
+        "xref\n0 6\n" +
+        "0000000000 65535 f \n";
+
+    var current = 9;
+
+    for (var i = 1; i <= 5; i++) {
+
+        xref +=
+            String(current).padStart(10, "0") +
+            " 00000 n \n";
+
+        current += 1;
+    }
+
+    xref +=
+        "trailer\n" +
+        "<< /Size 6 /Root 1 0 R >>\n" +
+        "startxref\n" +
+        xrefStart +
+        "\n%%EOF";
+
+    return new Blob(
+        [
+            parts[0],
+            parts[1],
+            parts[2],
+            xref
+        ],
+        {type: "application/pdf"}
+    );
+}
+
+</script>
+
+</body>
+</html>
