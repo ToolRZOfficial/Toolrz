@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ToolRz YouTube Title Generator</title>
+
+<meta name="description" content="Generate catchy YouTube titles with ToolRz. Create multiple title ideas for your videos instantly.">
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+    color: #172033;
+}
+
+header {
+    background: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.logo {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #2563eb;
+}
+
+.container {
+    max-width: 750px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.box {
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #64748b;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+textarea,
+select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+}
+
+textarea {
+    min-height: 130px;
+    resize: vertical;
+}
+
+.option {
+    margin-top: 18px;
+}
+
+button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.results {
+    display: none;
+    margin-top: 25px;
+}
+
+.title-card {
+    background: #f8fafc;
+    padding: 15px;
+    margin-top: 12px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.title-text {
+    font-weight: bold;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.copy {
+    margin-top: 10px;
+    padding: 9px 14px;
+    width: auto;
+    background: #172033;
+    font-size: 14px;
+}
+
+.back {
+    display: block;
+    text-align: center;
+    margin-top: 25px;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #64748b;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">Tool<span>Rz</span></div>
+</header>
+
+<div class="container">
+
+<div class="box">
+
+<h1>YouTube Title Generator</h1>
+
+<p class="subtitle">
+Enter your video topic and generate catchy YouTube title ideas.
+</p>
+
+<label for="topic">Video Topic</label>
+
+<textarea
+id="topic"
+placeholder="Example: Easy chicken biryani recipe"
+></textarea>
+
+<div class="option">
+
+<label for="style">Title Style</label>
+
+<select id="style">
+
+<option value="mixed">Mixed</option>
+<option value="curiosity">Curiosity</option>
+<option value="howto">How-To</option>
+<option value="list">List / Numbers</option>
+<option value="short">Short & Catchy</option>
+
+</select>
+
+</div>
+
+<button id="generate">
+Generate Titles
+</button>
+
+<div class="results" id="results">
+
+<h2>Title Ideas</h2>
+
+<div id="titleList"></div>
+
+</div>
+
+<a class="back" href="index.html">
+← Back to ToolRz
+</a>
+
+</div>
+</div>
+
+<footer>
+© 2026 ToolRz — Free Online Tools
+</footer>
+
+<script>
+
+var topic =
+document.getElementById("topic");
+
+var style =
+document.getElementById("style");
+
+var results =
+document.getElementById("results");
+
+var titleList =
+document.getElementById("titleList");
+
+
+document.getElementById("generate").addEventListener("click", function() {
+
+    var text = topic.value.trim();
+
+    if (!text) {
+        alert("Please enter your video topic first.");
+        return;
+    }
+
+    var titles = [];
+
+    if (style.value === "curiosity") {
+
+        titles = [
+            "You Won't Believe What Happens With " + text,
+            "The Truth About " + text,
+            "I Tried " + text + " — Here's What Happened",
+            "Before You Try " + text + ", Watch This",
+            "What Nobody Tells You About " + text
+        ];
+
+    } else if (style.value === "howto") {
+
+        titles = [
+            "How to Make " + text + " Step by Step",
+            "How to Do " + text + " the Easy Way",
+            "The Easiest Way to Make " + text,
+            "How I Made " + text + " Successfully",
+            "Complete Guide to " + text
+        ];
+
+    } else if (style.value === "list") {
+
+        titles = [
+            "5 Things You Need to Know About " + text,
+            "7 Easy Tips for " + text,
+            "10 Mistakes to Avoid With " + text,
+            "5 Best Ways to Improve " + text,
+            "7 Secrets Behind " + text
+        ];
+
+    } else if (style.value === "short") {
+
+        titles = [
+            text + " Made Easy!",
+            text + " in Minutes!",
+            "The Ultimate " + text,
+            "Simple " + text + " Trick",
+            text + " You Need to Try!"
+        ];
+
+    } else {
+
+        titles = [
+            "The Ultimate Guide to " + text,
+            "You Won't Believe This About " + text,
+            "How to Master " + text,
+            "5 Things You Should Know About " + text,
+            "The Easy Way to Do " + text,
+            "I Tried " + text + " — Here's What Happened",
+            "Everything You Need to Know About " + text,
+            "The Secret Behind " + text
+        ];
+    }
+
+    titleList.innerHTML = "";
+
+    titles.forEach(function(title) {
+
+        var card =
+            document.createElement("div");
+
+        card.className =
+            "title-card";
+
+        var textElement =
+            document.createElement("div");
+
+        textElement.className =
+            "title-text";
+
+        textElement.textContent =
+            title;
+
+        var copyButton =
+            document.createElement("button");
+
+        copyButton.className =
+            "copy";
+
+        copyButton.textContent =
+            "Copy";
+
+        copyButton.onclick = function() {
+
+            navigator.clipboard.writeText(title);
+
+            copyButton.textContent =
+                "Copied!";
+
+            setTimeout(function() {
+
+                copyButton.textContent =
+                    "Copy";
+
+            }, 1200);
+        };
+
+        card.appendChild(textElement);
+        card.appendChild(copyButton);
+
+        titleList.appendChild(card);
+    });
+
+    results.style.display =
+        "block";
+
+});
+
+</script>
+
+</body>
+</html>
